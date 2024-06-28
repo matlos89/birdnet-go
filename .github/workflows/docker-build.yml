@@ -45,7 +45,7 @@ jobs:
 
   push-docker-image:
     needs: test-docker-image
-    if: github.event_name == 'push' && github.ref_name == 'main'
+    if: github.event_name == 'push' #&& github.ref_name == 'main'
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout GitHub Action
