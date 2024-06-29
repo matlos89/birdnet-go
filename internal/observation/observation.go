@@ -1,6 +1,7 @@
 package observation
 
 import (
+	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -177,6 +178,48 @@ func WriteNotesCsv(settings *conf.Settings, notes []datastore.Note, filename str
 		return fmt.Errorf("failed to write note to CSV: %w", err)
 	} else {
 		fmt.Println("Output written to", filename)
+	}
+
+	// Return nil if the writing operation completes successfully.
+	return nil
+}
+
+// WriteNotesJson writes the slice of notes to the specified destination in JSON format.
+// If filename is an empty string, the function writes to stdout.
+// The function returns an error if writing to the destination fails.
+func WriteNotesJson(settings *conf.Settings, notes []datastore.Note, filename string) error {
+	// Define an io.Writer to abstract the writing operation.
+	var w io.Writer
+
+	// Determine the output destination, file or screen
+	if settings.Output.File.Enabled {
+		// Ensure the filename has a .csv extension.
+		if !strings.HasSuffix(filename, ".json") {
+			filename += ".json"
+		}
+		// Create or truncate the file with the given filename.
+		file, err := os.Create(filename)
+		if err != nil {
+			return fmt.Errorf("failed to create file %s: %w", filename, err)
+		}
+		defer file.Close()
+		w = file
+	} else {
+		// Print output to stdout if the file output is disabled
+		w = os.Stdout
+	}
+
+	// Pre-declare err outside the loop to avoid re-declaration
+	var err error
+
+	noteJson, err := json.Marshal(notes)
+	if err != nil {
+		return fmt.Errorf("failed to convert notes to JSON: $w", err)
+	}
+
+	err = os.WriteFile(filename, noteJson, os.ModePerm)
+	if err != nil {
+		return fmt.Errorf("couldn't save note in JSON format to %s: $w", filename, err)
 	}
 
 	// Return nil if the writing operation completes successfully.

@@ -65,5 +65,12 @@ func FileAnalysis(settings *conf.Settings) error {
 			log.Fatalf("failed to write notes CSV: %v", err)
 		}
 	}
+
+	// If OutputType is set to "json", output as JSON format.
+	if settings.Output.File.Type == "json" {
+		if err := observation.WriteNotesJson(settings, notes, outputFile); err != nil {
+			log.Fatalf("failed to write notes JSON: %v", err)
+		}
+	}
 	return nil
 }

@@ -115,7 +115,7 @@ output:
   file:
     enabled: true         # true to enable file output for file and directory analysis
     path: output/         # path to output directory
-    type: table           # ouput format, Raven table or csv
+    type: table           # ouput format, Raven table, csv or json
   # Only one database is supported at a time
   # if both are enabled, SQLite will be used.
   sqlite:
