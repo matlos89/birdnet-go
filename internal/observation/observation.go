@@ -214,12 +214,11 @@ func WriteNotesJson(settings *conf.Settings, notes []datastore.Note, filename st
 
 	noteJson, err := json.Marshal(notes)
 	if err != nil {
-		return fmt.Errorf("failed to convert notes to JSON: $w", err)
+		return fmt.Errorf("failed to convert notes to JSON: %w", err)
 	}
 
-	err = os.WriteFile(filename, noteJson, os.ModePerm)
-	if err != nil {
-		return fmt.Errorf("couldn't save note in JSON format to %s: $w", filename, err)
+	if _, err = w.Write(noteJson); err != nil {
+		return fmt.Errorf("couldn't save note in JSON format to %s: %w", filename, err)
 	}
 
 	// Return nil if the writing operation completes successfully.
